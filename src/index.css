@@ -3,6 +3,12 @@
   --color-light: #ffe8cc;
   --color-medium: #ffa94d;
   --color-dark: #ff922b;
+
+  --color-green: #66a80f;
+  --color-red: #e03131;
+  --color-white: #fff;
+
+  --color-background: #e07a15;
 }
 
 * {
@@ -25,12 +31,21 @@ body {
   justify-content: center;
 }
 
+.app-container {
+  min-height: 90vh;
+  width: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .app {
   min-height: 66vh;
   display: grid;
   grid-template-columns: 34rem 44rem;
   column-gap: 4rem;
   align-items: start;
+  padding-top: 20px;
 }
 
 .button {
@@ -100,11 +115,11 @@ body {
 }
 
 .green {
-  color: #66a80f;
+  color: var(--color-green);
 }
 
 .red {
-  color: #e03131;
+  color: var(--color-red);
 }
 
 form {
@@ -129,12 +144,6 @@ form {
 
 label {
   font-weight: 500;
-}
-
-label::first-letter {
-  display: inline-block;
-  margin-right: 4px;
-  font-size: 1.8rem;
 }
 
 input,
@@ -166,4 +175,45 @@ form h2 {
   text-transform: uppercase;
   letter-spacing: -0.5px;
   margin-bottom: 1.6rem;
+}
+
+/* --- MENU BAR --- */
+.menu-bar {
+  width: 75vw;
+  background-color: var(--color-medium);
+  color: #343a40;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 3px solid var(--color-dark);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu-title {
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+.menu-actions {
+  display: flex;
+  gap: 1.2rem; /* space between the buttons */
+  align-items: center;
+}
+
+.add-player-btn {
+  background-color: var(--color-dark);
+  color: var(--color-white);
+  padding: 0.8rem 1.4rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-player-btn:hover {
+  background-color: var(--color-background);
 }
