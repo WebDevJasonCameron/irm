@@ -1,8 +1,14 @@
-export default function PlayerList() {
+import Player from "./Player.jsx";
+
+export default function PlayerList({ players }) {
 
   return (
-    <section className="player-list">
-      <h2>Player List</h2>
-    </section>
+    <ul>
+      { players.map((player) => (
+        <Player player={ player }
+                key={ player.id } />
+        ))
+      }
+    </ul>
   )
 }
