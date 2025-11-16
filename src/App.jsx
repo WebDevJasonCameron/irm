@@ -13,6 +13,9 @@ function App() {
   const [players, setPlayers] = useState(playersSource);
   const [targetedPlayer, setTargetedPlayer] = useState(players[0]);
 
+  let startingCombat = false;
+  let inCombat = true;
+
   function handleShowAddPlayer() {
     setShowAddPlayer((show) => !show);
   }
@@ -41,9 +44,11 @@ function App() {
         </div>
 
         { showAddPlayer && <AddPlayerForm onAddPlayer={ handleAddPlayer } /> }
-        { targetedPlayer &&  <AssignInitiativeForm targetedPlayer={ targetedPlayer } onInitiativeInput />}
+        { targetedPlayer &&
+          startingCombat && <AssignInitiativeForm targetedPlayer={ targetedPlayer }
+                                                   onInitiativeInput />}
 
-        <ActionCard />
+        <ActionCard targetedPlayer={ targetedPlayer } />
       </div>
     </div>
   )
