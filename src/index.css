@@ -137,9 +137,62 @@ form {
   margin-bottom: 1.6rem;
   padding: 1.2rem;
 }
-.form-split-bill {
-  grid-template-columns: 1fr 12rem;
-  padding: 3.2rem 4rem;
+
+/* Initiative Form */
+.form-assign-initiative {
+  background-color: var(--color-lightest);
+  border-radius: 10px;
+  padding: 1.6rem 2rem;
+}
+
+.initiative-avatar img {
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.initiative-main h5 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.initiative-main label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.initiative-main input {
+  min-width: 12rem;         /* wider initiative box */
+  text-align: center;
+}
+
+.initiative-actions {
+  display: flex;
+  flex-direction: column;  /* 🔥 stack items vertically */
+  gap: 0.8rem;             /* space between Next and Combat */
+  align-items: stretch;    /* ensures both buttons are equal width */
+}
+
+.initiative-actions .button,
+.initiative-actions .btn-danger {
+  min-width: 7rem;
+  text-align: center;
+}
+
+.btn-danger {
+  background-color: var(--color-dark);
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #e07a15;
+}
+
+.initiative-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 2rem;
 }
 
 label {

@@ -5,37 +5,47 @@ import { LevelNumberSelectionGenerator as LevelSelect, GenericSelect } from "../
 import Button from "../assets/Button.jsx";
 
 export default function AddPlayerForm({ onAddPlayer }) {
-  const [playerName, setPlayerName] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://i.pravatar.cc/48");
-  const [playerType , setPlayerType] = useState("pc");
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
+  const [type , setType] = useState("npc");
   const [level, setLevel] = useState(1);
   const [prof, setProf] = useState("");
   const [race, setRace] = useState("");
+  const [seat, setSeat] = useState(0);
+  const [initiative, setInitiative] = useState(0);
+
+  // Placeholder Vars
+  let inCombat = false;
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!playerName || !imageUrl) return;
+    if (!name || !image) return;
 
     const id = crypto.randomUUID();
     const newPlayer = {
       id,
-      playerName,
-      imageUrl: `${imageUrl}?=${id}`,
-      playerType,
+      name,
+      image: `${image}?=${id}`,
+      type: type,
       level,
       prof,
       race,
+      saves: { fail: 0, success: 0 },
+      seat: 0,
+      initiative: 0
     }
 
     onAddPlayer(newPlayer);
 
-    setPlayerName("");
-    setImageUrl("https://i.pravatar.cc/48");
-    setPlayerType("pc");
+    setName("");
+    setImage("https://i.pravatar.cc/48");
+    setType("pc");
     setLevel(1);
     setProf("");
     setRace("");
+    setSeat(0)
+    setInitiative(0);
 
   }
 
@@ -44,22 +54,31 @@ export default function AddPlayerForm({ onAddPlayer }) {
           onSubmit={handleSubmit}>
       <label>Player Name</label>
       <input type="text"
-             value={ playerName }
-             onChange={(e) => setPlayerName(e.target.value)} />
+             value={ name }
+             onChange={(e) => setName(e.target.value)} />
 
       <label>Image URL</label>
       <input type="text"
-             value={ imageUrl }
-             onChange={(e) => setImageUrl(e.target.value)} />
+             value={ image }
+             onChange={(e) => setImage(e.target.value)} />
 
       <label>Type</label>
-      <select value={ playerType }
-              onChange={ (e) => setPlayerType(e.target.value) }>
-        <option value="pc">Player</option>
+      <select value={ type }
+              onChange={ (e) => setType(e.target.value) }>
         <option value="npc">NPC</option>
+        <option value="pc">Player</option>
       </select>
 
-      { playerType === "pc" && (
+      { inCombat && (
+        <>
+          <label>Initiative Roll</label>
+          <input type="number"
+                 value={ initiative }
+                 onChange={(e) => setInitiative(Number(e.target.value))}/>
+        </>
+      )}
+
+      { type === "pc" && (
         <>
           <label>Level</label>
           <LevelSelect min={1}
@@ -78,6 +97,15 @@ export default function AddPlayerForm({ onAddPlayer }) {
                          value={race}
                          onChange={setRace}
                          placeholder="Set race..." />
+        </>
+      )}
+
+      { !inCombat && type === 'pc' && (
+        <>
+          <label>Player's Seat</label>
+          <input type="number"
+                 value={ seat }
+                 onChange={(e) => setSeat(Number(e.target.value))}/>
         </>
       )}
 

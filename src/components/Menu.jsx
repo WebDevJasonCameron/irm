@@ -1,6 +1,6 @@
 import Button from "../assets/Button.jsx";
 
-export default function Menu({ onClickShowAddPlayer, showAddPlayerBtn }) {
+export default function Menu({ onClickShowAddPlayer, onClickCombat, showAddPlayerBtn }) {
 
   return (
     <header className="menu-bar">
@@ -12,7 +12,7 @@ export default function Menu({ onClickShowAddPlayer, showAddPlayerBtn }) {
                 onClick={ onClickShowAddPlayer } >
           {showAddPlayerBtn ? "Close" : "Add Player" }
         </Button>
-        <Button>
+        <Button onClick={ onClickCombat } >
           Combat
         </Button>
       </div>

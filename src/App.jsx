@@ -6,10 +6,12 @@ import playersSource from "./assets/PlayersSource.jsx";
 
 import {useState} from "react";
 import Menu from "./components/Menu.jsx";
+import AssignInitiativeForm from "./components/AssignInitiativeForm.jsx";
 
 function App() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [players, setPlayers] = useState(playersSource);
+  const [targetedPlayer, setTargetedPlayer] = useState(players[0]);
 
   function handleShowAddPlayer() {
     setShowAddPlayer((show) => !show);
@@ -17,11 +19,21 @@ function App() {
 
   function handleAddPlayer(player) {
     setPlayers((players) =>[...players, player]);
+    setShowAddPlayer(false);
+  }
+
+  function handleEnterBattle() {
+    console.log("Enter Battle");
+  }
+
+  function handleInitiativeInput(player) {
+    console.log(player);
   }
 
   return (
     <div className="app-container">
-      <Menu onClickShowAddPlayer={handleShowAddPlayer}
+      <Menu onClickShowAddPlayer={ handleShowAddPlayer }
+            onClickCombat={ handleEnterBattle }
             showAddPlayerBtn={ showAddPlayer }/>
       <div className="app">
         <div className="sidebar">
@@ -29,6 +41,7 @@ function App() {
         </div>
 
         { showAddPlayer && <AddPlayerForm onAddPlayer={ handleAddPlayer } /> }
+        { targetedPlayer &&  <AssignInitiativeForm targetedPlayer={ targetedPlayer } onInitiativeInput />}
 
         <ActionCard />
       </div>
