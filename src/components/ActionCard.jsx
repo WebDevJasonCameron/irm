@@ -1,8 +1,14 @@
 import Button from "../assets/Button.jsx";
 import {useState} from "react";
+import {GenericSelect, LevelNumberSelectionGenerator as LevelSelect} from "../assets/HelperUtils.jsx";
+import ConditionsSource from "../assets/ConditionsSource.jsx";
+
 
 export default function ActionCard({ targetedPlayer }) {
   const { name, image } = targetedPlayer;
+
+  const [condition, setCondition] = useState("");
+  const [exhaustion, setExhaustion] = useState(0);
 
   const [actionChecked, setActionChecked] = useState(false);
   const [bonusActionChecked, setBonusActionChecked] = useState(false);
@@ -49,15 +55,39 @@ export default function ActionCard({ targetedPlayer }) {
           Movement
         </label>
 
+        <div className="action-selection-row">
+          <label>Condition</label>
+          <GenericSelect
+            id="condition-select"
+            items={ConditionsSource}
+            value={condition}
+            styling="uniform-select"
+            onChange={setCondition}
+            placeholder="Set class..."
+          />
+        </div>
+
+        <div className="action-selection-row">
+          <label>Exhaustion</label>
+          <LevelSelect min={0}
+                       max={6}
+                       styling="uniform-select"
+                       value={exhaustion}
+                       onChange={(e) => setExhaustion(Number(e.target.value))} />
+        </div>
+
       </div>
 
       {/*Right*/}
       <div className="action-actions">
         <Button >
-          Next
+          Done
         </Button>
         <Button>
-          🚫Combat
+          Hold
+        </Button>
+        <Button>
+          Down
         </Button>
       </div>
 

@@ -26,14 +26,20 @@ export default function AddPlayerForm({ onAddPlayer }) {
     const newPlayer = {
       id,
       name,
-      image: `${image}?=${id}`,
       type: type,
+      image: `${image}?=${id}`,
+      activity: "inactive",
       level,
       prof,
       race,
-      saves: { fail: 0, success: 0 },
+      saves: {
+        fail: 0,
+        success: 0
+      },
       seat: 0,
-      initiative: 0
+      initiative: 0,
+      round: 0,
+      targeted: false,
     }
 
     onAddPlayer(newPlayer);

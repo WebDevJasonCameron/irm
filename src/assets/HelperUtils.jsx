@@ -6,12 +6,17 @@ function capitalize(str) {
 
 
 // Auto-Gen Level Options List
-export function LevelNumberSelectionGenerator({ min = 1, max = 20, ...props }) {
+export function LevelNumberSelectionGenerator({ min = 1,
+                                                max = 20,
+                                                styling = "",
+                                                ...props }) {
   const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
   return (
-    <select {...props}>
+    <select className={styling}
+            {...props}>
       {numbers.map((num) => (
-        <option key={num} value={num}>
+        <option key={num}
+                value={num}>
           {num}
         </option>
       ))}
@@ -22,6 +27,7 @@ export function LevelNumberSelectionGenerator({ min = 1, max = 20, ...props }) {
 // Auto-Gen Generic Options List
 export function GenericSelect({ items = [],
                                 value,
+                                styling = "",
                                 onChange, placeholder = "Select...",
                                 includePlaceholder = true,
                                 ...props }) {
@@ -37,7 +43,8 @@ export function GenericSelect({ items = [],
   const labelGetter = defaultGetLabel;
 
   return (
-    <select value={value}
+    <select className={styling}
+            value={value}
             onChange={(e) => onChange(e.target.value)}
             {...props}>
 

@@ -180,6 +180,69 @@ form {
   text-align: center;
 }
 
+/* Action Form */
+.action-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 2rem;
+}
+
+.action-avatar img {
+  margin: 0.8rem;
+  width: 8rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.action-main h5 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.action-main label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.action-main input {
+  min-width: 12rem;         /* wider action box */
+  text-align: center;
+}
+
+.action-actions {
+  display: flex;
+  flex-direction: column;  /* 🔥 stack items vertically */
+  gap: 0.8rem;             /* space between Next and Combat */
+  align-items: stretch;    /* ensures both buttons are equal width */
+}
+
+.action-actions .button,
+.action-actions .btn-danger {
+  min-width: 7rem;
+  text-align: center;
+}
+
+.action-selection-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;            /* space BETWEEN label and select */
+  margin-top: 0.8rem;   /* space ABOVE the row */
+}
+
+.action-selection-row label {
+  min-width: 9rem;      /* aligns label text nicely */
+  text-align: right;    /* keep labels aligned right like your checkbox labels */
+}
+
+.uniform-select {
+  width: 15rem;      /* or 150px, or whatever looks good */
+  /* optional: */
+  text-align: center;
+}
+
+/*---------------------------------*/
+
 .btn-danger {
   background-color: var(--color-dark);
   color: #fff;
