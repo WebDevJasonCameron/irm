@@ -12,9 +12,9 @@ function App() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [players, setPlayers] = useState(playersSource);
   const [targetedPlayer, setTargetedPlayer] = useState(players[0]);
+  const [startingCombat, setStartingCombat] = useState(false);
+  const [inCombat, setInCombat] = useState(false);
 
-  let startingCombat = false;
-  let inCombat = true;
 
   function handleShowAddPlayer() {
     setShowAddPlayer((show) => !show);
@@ -26,7 +26,7 @@ function App() {
   }
 
   function handleEnterBattle() {
-    console.log("Enter Battle");
+    setStartingCombat(true);
   }
 
   function handleInitiativeInput(player) {
@@ -35,7 +35,9 @@ function App() {
 
   return (
     <div className="app-container">
-      <Menu onClickShowAddPlayer={ handleShowAddPlayer }
+      <Menu startingCombat={startingCombat}
+            inCombat={inCombat}
+            onClickShowAddPlayer={ handleShowAddPlayer }
             onClickCombat={ handleEnterBattle }
             showAddPlayerBtn={ showAddPlayer }/>
       <div className="app">
@@ -47,8 +49,8 @@ function App() {
         { targetedPlayer &&
           startingCombat && <AssignInitiativeForm targetedPlayer={ targetedPlayer }
                                                    onInitiativeInput />}
+        { targetedPlayer && !startingCombat && inCombat && <ActionCard targetedPlayer={ targetedPlayer } />}
 
-        <ActionCard targetedPlayer={ targetedPlayer } />
       </div>
     </div>
   )

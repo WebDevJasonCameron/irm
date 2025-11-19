@@ -1,6 +1,12 @@
 import Button from "../assets/Button.jsx";
 
-export default function Menu({ onClickShowAddPlayer, onClickCombat, showAddPlayerBtn }) {
+export default function Menu({ startingCombat,
+                               inCombat,
+                               onClickShowAddPlayer,
+                               onClickCombat,
+                               showAddPlayerBtn }) {
+
+  const combatBtnFlag = (startingCombat || inCombat)
 
   return (
     <header className="menu-bar">
@@ -12,9 +18,14 @@ export default function Menu({ onClickShowAddPlayer, onClickCombat, showAddPlaye
                 onClick={ onClickShowAddPlayer } >
           {showAddPlayerBtn ? "Close" : "Add Player" }
         </Button>
-        <Button onClick={ onClickCombat } >
-          Combat
-        </Button>
+
+        { !combatBtnFlag &&
+          <Button onClick={ onClickCombat } >
+            Combat
+          </Button>
+        }
+
+
       </div>
     </header>
   )

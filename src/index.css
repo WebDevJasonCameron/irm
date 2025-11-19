@@ -182,6 +182,7 @@ form {
 
 /* Action Form */
 .action-card {
+  width: 110%;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
