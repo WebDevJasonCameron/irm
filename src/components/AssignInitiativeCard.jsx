@@ -1,28 +1,37 @@
 import {useState} from "react";
 import Button from "../assets/Button.jsx";
 
-export default function AssignInitiativeForm({ targetedPlayer }) {
-  const { id, name, image, type, level, prof, race, saves, seat, initiative } = targetedPlayer;
+export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput }) {
+  const { id, name, type, image, activity, condition, exhaustion, level, prof, race, saves, seat, initiative, round, targeted } = targetedPlayer;
 
   const [ init, setInit ] = useState(0);
 
   function handleSubmit(e) {
     e.preventDefault();
 
+    if (init === 0) return;
+
     const updatedPlayer = {
       id,
       name,
-      image,
       type,
+      image,
+      activity,
+      condition,
+      exhaustion,
       level,
       prof,
       race,
       saves,
       seat,
       initiative: init,
+      round,
+      targeted,
     }
 
     setInit(0);
+
+    onInitiativeInput(updatedPlayer);
   }
 
   return (
@@ -43,7 +52,7 @@ export default function AssignInitiativeForm({ targetedPlayer }) {
         </div>
         {/*Buttons*/}
         <div className="initiative-actions">
-          <Button >
+          <Button onClick={handleSubmit}>
             Next
           </Button>
           <Button>

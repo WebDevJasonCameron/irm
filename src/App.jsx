@@ -6,7 +6,7 @@ import playersSource from "./assets/PlayersSource.jsx";
 
 import {useState} from "react";
 import Menu from "./components/Menu.jsx";
-import AssignInitiativeForm from "./components/AssignInitiativeForm.jsx";
+import AssignInitiativeCard from "./components/AssignInitiativeCard.jsx";
 
 function App() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
@@ -14,7 +14,6 @@ function App() {
   const [targetedPlayer, setTargetedPlayer] = useState();
   const [startingCombat, setStartingCombat] = useState(false);
   const [inCombat, setInCombat] = useState(false);
-
 
   function handleShowAddPlayer() {
     setShowAddPlayer((show) => !show);
@@ -26,25 +25,33 @@ function App() {
   }
 
   function handleEnterBattle() {
+    // Set "Starting Combat" Phase
     setStartingCombat(true);
-    handleInitiativeRollCollection();
+
+    // Make Everyone "active"
+    setPlayers((pevPlayers) =>
+      pevPlayers.map((p) =>
+        ({...p, activity: "active", initiative: 0, targeted: false
+      }))
+    );
+
+    // One by One, Call each Player Card
+    handleInitiativeRollCards();
   }
 
-  function handleInitiativeInput(player) {
-    console.log(player);
-  }
-
-
-  function handleInitiativeRollCollection() {
+  function handleInitiativeRollCards() {
     setPlayers((prevPlayers) => {
       // Find all “active” players with initiative 0
       const nonInitPlayers = prevPlayers.filter(
-        (player) => player.activity === "active" && player.initiative === 0
+        (player) => player.activity === "active" && player.initiative === 0 && player.initiative === false
       );
 
       if (nonInitPlayers.length === 0) {
         // nobody to target
         setTargetedPlayer(null);
+        console.log("No more players are left to get initiative rolls")
+        setStartingCombat(false);
+        setInCombat(true)
         return prevPlayers;
       }
 
@@ -56,9 +63,15 @@ function App() {
 
       // Return a new players array with that player marked as targeted
       return prevPlayers.map((p) =>
-        p.id === targetPlayer.id ? { ...p, targeted: true } : p
+        p.id === targetPlayer.id ? {...p, targeted: true} : p
       );
     });
+  }
+
+  function handleInitiativeInput() {
+    handleInitiativeRollCards()
+
+  }
 
   return (
     <div className="app-container">
@@ -73,14 +86,17 @@ function App() {
         </div>
 
         { showAddPlayer && <AddPlayerForm onAddPlayer={ handleAddPlayer } /> }
+
         { targetedPlayer &&
-          startingCombat && <AssignInitiativeForm targetedPlayer={ targetedPlayer }
-                                                   onInitiativeInput />}
-        { targetedPlayer && !startingCombat && inCombat && <ActionCard targetedPlayer={ targetedPlayer } />}
+          startingCombat && <AssignInitiativeCard targetedPlayer={ targetedPlayer }
+                                                  onInitiativeInput={handleInitiativeInput}  />}
+        { targetedPlayer &&
+          !startingCombat &&
+          inCombat && <ActionCard targetedPlayer={ targetedPlayer } />}
 
       </div>
     </div>
   )
 }
 
-export default App
+export default App;
