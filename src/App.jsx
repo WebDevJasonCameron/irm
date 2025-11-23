@@ -1,6 +1,6 @@
 
 import PlayerList from "./components/PlayerList.jsx";
-import AddPlayerForm from "./components/AddPlayerForm.jsx";
+import AddPlayerCard from "./components/AddPlayerCard.jsx";
 import ActionCard from "./components/ActionCard.jsx";
 import playersSource from "./assets/PlayersSource.jsx";
 
@@ -25,78 +25,110 @@ function App() {
   }
 
   function handleEnterBattle() {
-    // Set "Starting Combat" Phase
     setStartingCombat(true);
 
-    // Make Everyone "active"
-    setPlayers((pevPlayers) =>
-      pevPlayers.map((p) =>
-        ({...p, activity: "active", initiative: 0, targeted: false
-      }))
-    );
+    // Initialize everyone as active, init 0, not targeted
+    setPlayers(prevPlayers => {
+      const initialized = prevPlayers.map(p => ({
+        ...p,
+        activity: "active",
+        initiative: 0,
+        targeted: false,
+      }));
 
-    // One by One, Call each Player Card
-    handleInitiativeRollCards();
-  }
-
-  function handleInitiativeRollCards() {
-    setPlayers((prevPlayers) => {
-      // Find all “active” players with initiative 0
-      const nonInitPlayers = prevPlayers.filter(
-        (player) => player.activity === "active" && player.initiative === 0 && player.initiative === false
+      // Pick the first player who needs an initiative roll
+      const nonInitPlayers = initialized.filter(
+        p => p.activity === "active" && p.initiative === 0
       );
 
       if (nonInitPlayers.length === 0) {
-        // nobody to target
+        // Edge case: no one to roll
         setTargetedPlayer(null);
-        console.log("No more players are left to get initiative rolls")
         setStartingCombat(false);
-        setInCombat(true)
-        return prevPlayers;
+        setInCombat(true);
+        return initialized;
       }
 
-      // Pick the first one (you can change this logic later)
-      const targetPlayer = nonInitPlayers[0];
+      const firstTarget = nonInitPlayers[0];
+      setTargetedPlayer(firstTarget);
 
-      // Store the actual player object in state for your InitCard
-      setTargetedPlayer(targetPlayer);
-
-      // Return a new players array with that player marked as targeted
-      return prevPlayers.map((p) =>
-        p.id === targetPlayer.id ? {...p, targeted: true} : p
+      return initialized.map(p =>
+        p.id === firstTarget.id ? { ...p, targeted: true } : p
       );
     });
   }
 
-  function handleInitiativeInput() {
-    handleInitiativeRollCards()
+  // called when the user submits an initiative roll in AssignInitiativeCard
+  function handleInitiativeInput(updatedPlayer) {
+    setPlayers(prevPlayers => {
+      // 1) Apply the initiative from updatedPlayer
+      const withUpdatedInit = prevPlayers.map(p =>
+        p.id === updatedPlayer.id
+          ? { ...p, initiative: updatedPlayer.initiative, targeted: false }
+          : p
+      );
+
+      // 2) Find remaining active players with initiative 0
+      const nonInitPlayers = withUpdatedInit.filter(
+        p => p.activity === "active" && p.initiative === 0
+      );
+
+      if (nonInitPlayers.length === 0) {
+        // No more players need initiative
+        setTargetedPlayer(null);
+        setStartingCombat(false);
+        setInCombat(true);
+
+        // Make sure no one stays "targeted"
+        return withUpdatedInit.map(p => ({ ...p, targeted: false }));
+      }
+
+      // 3) Target the next player
+      const nextTarget = nonInitPlayers[0];
+      setTargetedPlayer(nextTarget);
+
+      return withUpdatedInit.map(p =>
+        p.id === nextTarget.id
+          ? { ...p, targeted: true }
+          : { ...p, targeted: false }
+      );
+    });
+
+  }
+
+  function onSetNonCombat(updatedPlayer) {
 
   }
 
   return (
     <div className="app-container">
-      <Menu startingCombat={startingCombat}
-            inCombat={inCombat}
-            onClickShowAddPlayer={ handleShowAddPlayer }
-            onClickCombat={ handleEnterBattle }
-            showAddPlayerBtn={ showAddPlayer }/>
+      <Menu
+        startingCombat={startingCombat}
+        inCombat={inCombat}
+        onClickShowAddPlayer={handleShowAddPlayer}
+        onClickCombat={handleEnterBattle}
+        showAddPlayerBtn={showAddPlayer}
+      />
       <div className="app">
         <div className="sidebar">
-          <PlayerList players={ players } />
+          <PlayerList players={players} />
         </div>
 
-        { showAddPlayer && <AddPlayerForm onAddPlayer={ handleAddPlayer } /> }
+        {showAddPlayer && <AddPlayerCard onAddPlayer={handleAddPlayer} />}
 
-        { targetedPlayer &&
-          startingCombat && <AssignInitiativeCard targetedPlayer={ targetedPlayer }
-                                                  onInitiativeInput={handleInitiativeInput}  />}
-        { targetedPlayer &&
-          !startingCombat &&
-          inCombat && <ActionCard targetedPlayer={ targetedPlayer } />}
+        {targetedPlayer && startingCombat && (
+          <AssignInitiativeCard
+            targetedPlayer={targetedPlayer}
+            onInitiativeInput={ handleInitiativeInput }
+          />
+        )}
 
+        {targetedPlayer && !startingCombat && inCombat && (
+          <ActionCard targetedPlayer={targetedPlayer} />
+        )}
       </div>
     </div>
-  )
+  );
 }
 
 export default App;

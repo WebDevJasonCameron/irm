@@ -4,7 +4,7 @@ import ProfessionsSource from "../assets/ProfessionsSource.jsx";
 import { LevelNumberSelectionGenerator as LevelSelect, GenericSelect } from "../assets/HelperUtils.jsx";
 import Button from "../assets/Button.jsx";
 
-export default function AddPlayerForm({ onAddPlayer }) {
+export default function AddPlayerCard({ onAddPlayer }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("https://i.pravatar.cc/48");
   const [type , setType] = useState("npc");
