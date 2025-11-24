@@ -1,7 +1,7 @@
 import {useState} from "react";
 import Button from "../assets/Button.jsx";
 
-export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput }) {
+export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput, onSetNonCombat }) {
   const { id, name, type, image, activity, condition, exhaustion, level, prof, race, saves, seat, initiative, round, targeted } = targetedPlayer;
 
   const [init, setInit] = useState(0);
@@ -51,10 +51,10 @@ export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput
         </div>
 
         <div className="initiative-actions">
-          <Button type="submit">
+          <Button btnType="submit">
             Next
           </Button>
-          <Button>
+          <Button onClick={onSetNonCombat}>
             🚫Combat
           </Button>
         </div>

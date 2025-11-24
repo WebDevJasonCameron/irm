@@ -59,7 +59,7 @@ function App() {
   }
 
   // called when the user submits an initiative roll in AssignInitiativeCard
-  function handleInitiativeInput(updatedPlayer) {
+  function advanceToNextPlayer(updatedPlayer) {
     setPlayers(prevPlayers => {
       // 1) Apply the initiative from updatedPlayer
       const withUpdatedInit = prevPlayers.map(p =>
@@ -93,11 +93,18 @@ function App() {
           : { ...p, targeted: false }
       );
     });
-
   }
 
-  function onSetNonCombat(updatedPlayer) {
+  function handleInitiativeInput(updatedPlayer) {
+    // normal "Next" flow: update initiative but keep them active
+    advanceToNextPlayer(updatedPlayer.id, {
+      initiative: updatedPlayer.initiative,
+    });
+  }
 
+  function handleSetNonCombat(updatedPlayer) {
+    advanceToNextPlayer(updatedPlayer.id, { activity: "inactive",
+    });
   }
 
   return (
@@ -118,8 +125,9 @@ function App() {
 
         {targetedPlayer && startingCombat && (
           <AssignInitiativeCard
-            targetedPlayer={targetedPlayer}
+            targetedPlayer={ targetedPlayer }
             onInitiativeInput={ handleInitiativeInput }
+            onSetNonCombat={ handleSetNonCombat }
           />
         )}
 
