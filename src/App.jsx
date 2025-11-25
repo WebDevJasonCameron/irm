@@ -58,42 +58,44 @@ function App() {
     });
   }
 
-  // called when the user submits an initiative roll in AssignInitiativeCard
-  function advanceToNextPlayer(updatedPlayer) {
+  function advanceToNextPlayer(currentPlayerId, updatesForCurrent = {}) {
     setPlayers(prevPlayers => {
-      // 1) Apply the initiative from updatedPlayer
-      const withUpdatedInit = prevPlayers.map(p =>
-        p.id === updatedPlayer.id
-          ? { ...p, initiative: updatedPlayer.initiative, targeted: false }
+      // 1) update the current player
+      const updatedList = prevPlayers.map(p =>
+        p.id === currentPlayerId
+          ? { ...p, ...updatesForCurrent, targeted: false }
           : p
       );
 
-      // 2) Find remaining active players with initiative 0
-      const nonInitPlayers = withUpdatedInit.filter(
+      // 2) find remaining active players with init 0
+      const nonInitPlayers = updatedList.filter(
         p => p.activity === "active" && p.initiative === 0
       );
 
       if (nonInitPlayers.length === 0) {
-        // No more players need initiative
+        // no more players need initiative
         setTargetedPlayer(null);
         setStartingCombat(false);
         setInCombat(true);
 
-        // Make sure no one stays "targeted"
-        return withUpdatedInit.map(p => ({ ...p, targeted: false }));
+        console.log(players)
+
+        // make sure no one is still targeted
+        return updatedList.map(p => ({ ...p, targeted: false }));
       }
 
-      // 3) Target the next player
+      // 3) target the next player
       const nextTarget = nonInitPlayers[0];
       setTargetedPlayer(nextTarget);
 
-      return withUpdatedInit.map(p =>
+      return updatedList.map(p =>
         p.id === nextTarget.id
           ? { ...p, targeted: true }
           : { ...p, targeted: false }
       );
     });
   }
+
 
   function handleInitiativeInput(updatedPlayer) {
     // normal "Next" flow: update initiative but keep them active

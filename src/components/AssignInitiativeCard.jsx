@@ -1,15 +1,36 @@
 import {useState} from "react";
 import Button from "../assets/Button.jsx";
 
-export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput, onSetNonCombat }) {
-  const { id, name, type, image, activity, condition, exhaustion, level, prof, race, saves, seat, initiative, round, targeted } = targetedPlayer;
+export default function AssignInitiativeCard({
+                                               targetedPlayer,
+                                               onInitiativeInput,
+                                               onSetNonCombat,
+                                             }) {
+  const {
+    id,
+    name,
+    type,
+    image,
+    activity,
+    condition,
+    exhaustion,
+    level,
+    prof,
+    race,
+    saves,
+    seat,
+    initiative,
+    round,
+    targeted,
+  } = targetedPlayer;
 
   const [init, setInit] = useState(0);
+  const [activityStatus, setActivityStautus] = useState(activity);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (init === 0) return;
+    if (activity === "active" && init === 0) return;
 
     const updatedPlayer = {
       id,
@@ -24,13 +45,41 @@ export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput
       race,
       saves,
       seat,
-      initiative: init,   // ← new roll
+      initiative: init,
       round,
       targeted,
     };
 
     setInit(0);
     onInitiativeInput(updatedPlayer);
+  }
+
+  function handleNonCombatClick(e) {
+    e.preventDefault();
+
+    // You can choose whether to carry over the typed init or not
+    const updatedPlayer = {
+      id,
+      name,
+      type,
+      image,
+      activity,
+      condition,
+      exhaustion,
+      level,
+      prof,
+      race,
+      saves,
+      seat,
+      initiative: init || initiative, // keep 0 if nothing typed
+      round,
+      targeted,
+    };
+
+    setInit(0);
+    setActivityStautus("active");
+
+    onSetNonCombat(updatedPlayer);
   }
 
   return (
@@ -54,7 +103,8 @@ export default function AssignInitiativeCard({ targetedPlayer, onInitiativeInput
           <Button btnType="submit">
             Next
           </Button>
-          <Button onClick={onSetNonCombat}>
+
+          <Button btnType="button" onClick={handleNonCombatClick}>
             🚫Combat
           </Button>
         </div>
