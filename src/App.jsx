@@ -1,4 +1,3 @@
-
 import PlayerList from "./components/PlayerList.jsx";
 import AddPlayerCard from "./components/AddPlayerCard.jsx";
 import ActionCard from "./components/ActionCard.jsx";
@@ -58,6 +57,18 @@ function App() {
     });
   }
 
+  function handleInitiativeInput(updatedPlayer) {
+    // normal "Next" flow: update initiative but keep them active
+    advanceToNextPlayer(updatedPlayer.id, {
+      initiative: updatedPlayer.initiative,
+    });
+  }
+
+  function handleSetNonCombat(updatedPlayer) {
+    advanceToNextPlayer(updatedPlayer.id, { activity: "inactive",
+    });
+  }
+
   function advanceToNextPlayer(currentPlayerId, updatesForCurrent = {}) {
     setPlayers(prevPlayers => {
       // 1) update the current player
@@ -73,15 +84,22 @@ function App() {
       );
 
       if (nonInitPlayers.length === 0) {
-        // no more players need initiative
-        setTargetedPlayer(null);
+        // 1. filter + sort the combatants
+        const sortedCombatants = finalizeInitiativeOrder(updatedList);
+
+        // 2. store the sorted list as the new combat order
+        setPlayers(sortedCombatants);
+
+        // 3. pick the first combatant for the action UI
+        const firstCombatant = sortedCombatants[0];
+        setTargetedPlayer(firstCombatant);
+
         setStartingCombat(false);
         setInCombat(true);
 
-        console.log(players)
-
-        // make sure no one is still targeted
-        return updatedList.map(p => ({ ...p, targeted: false }));
+        // important: since we called setPlayers() above,
+        // return the *previous* list here to terminate the state setter
+        return prevPlayers;
       }
 
       // 3) target the next player
@@ -96,18 +114,12 @@ function App() {
     });
   }
 
+  function finalizeInitiativeOrder(playersList) {
+    const activeOnly = playersList.filter(p => p.activity === "active");
 
-  function handleInitiativeInput(updatedPlayer) {
-    // normal "Next" flow: update initiative but keep them active
-    advanceToNextPlayer(updatedPlayer.id, {
-      initiative: updatedPlayer.initiative,
-    });
+    return [...activeOnly].sort((a, b) => b.initiative - a.initiative);
   }
 
-  function handleSetNonCombat(updatedPlayer) {
-    advanceToNextPlayer(updatedPlayer.id, { activity: "inactive",
-    });
-  }
 
   return (
     <div className="app-container">
@@ -116,6 +128,7 @@ function App() {
         inCombat={inCombat}
         onClickShowAddPlayer={handleShowAddPlayer}
         onClickCombat={handleEnterBattle}
+        onClickEndCombat={() => setInCombat(false)}
         showAddPlayerBtn={showAddPlayer}
       />
       <div className="app">
