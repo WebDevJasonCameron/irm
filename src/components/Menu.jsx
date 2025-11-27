@@ -5,7 +5,7 @@ export default function Menu({ startingCombat,
                                onClickShowAddPlayer,
                                onClickCombat,
                                onClickEndCombat,
-                               showAddPlayerBtn }) {
+                               showAddPlayerBtn}) {
 
   const combatBtnFlag = (startingCombat || inCombat)
 
@@ -20,7 +20,8 @@ export default function Menu({ startingCombat,
           {showAddPlayerBtn ? "Close" : "Add Player" }
         </Button>
 
-        { !combatBtnFlag &&
+        {
+          !combatBtnFlag &&
           <Button onClick={ onClickCombat } >
             Combat
           </Button>

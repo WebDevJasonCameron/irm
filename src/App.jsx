@@ -10,6 +10,7 @@ import AssignInitiativeCard from "./components/AssignInitiativeCard.jsx";
 function App() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [players, setPlayers] = useState(playersSource);
+  const [nonCombatants, setNonCombatants] = useState([])
   const [targetedPlayer, setTargetedPlayer] = useState();
   const [startingCombat, setStartingCombat] = useState(false);
   const [inCombat, setInCombat] = useState(false);
@@ -27,8 +28,8 @@ function App() {
     setStartingCombat(true);
 
     // Initialize everyone as active, init 0, not targeted
-    setPlayers(prevPlayers => {
-      const initialized = prevPlayers.map(p => ({
+    setPlayers((prevPlayers) => {
+      const initializedPlayers = prevPlayers.map((p) => ({
         ...p,
         activity: "active",
         initiative: 0,
@@ -36,7 +37,7 @@ function App() {
       }));
 
       // Pick the first player who needs an initiative roll
-      const nonInitPlayers = initialized.filter(
+      const nonInitPlayers = initializedPlayers.filter(
         p => p.activity === "active" && p.initiative === 0
       );
 
@@ -45,13 +46,13 @@ function App() {
         setTargetedPlayer(null);
         setStartingCombat(false);
         setInCombat(true);
-        return initialized;
+        return initializedPlayers;
       }
 
       const firstTarget = nonInitPlayers[0];
       setTargetedPlayer(firstTarget);
 
-      return initialized.map(p =>
+      return initializedPlayers.map(p =>
         p.id === firstTarget.id ? { ...p, targeted: true } : p
       );
     });
@@ -84,11 +85,13 @@ function App() {
       );
 
       if (nonInitPlayers.length === 0) {
-        // 1. filter + sort the combatants
+        // 1. filter + sort the combatants and non-combatants
         const sortedCombatants = finalizeInitiativeOrder(updatedList);
+        const sortedNonCombatants = finalizeNonCombatantList(updatedList);
 
         // 2. store the sorted list as the new combat order
         setPlayers(sortedCombatants);
+        setNonCombatants(sortedNonCombatants);
 
         // 3. pick the first combatant for the action UI
         const firstCombatant = sortedCombatants[0];
@@ -116,10 +119,35 @@ function App() {
 
   function finalizeInitiativeOrder(playersList) {
     const activeOnly = playersList.filter(p => p.activity === "active");
-
     return [...activeOnly].sort((a, b) => b.initiative - a.initiative);
   }
 
+  function finalizeNonCombatantList(playersList) {
+    const nonActiveOnly = playersList.filter(p => p.activity === "inactive");
+    return [...nonActiveOnly].sort((a, b) => b.initiative - a.initiative);
+  }
+
+  function handleEndCombat() {
+    const clearCombatants = players.map((p) => ({
+      ...p,
+      activity: "inactive",
+      initiative: 0,
+      targeted: false,
+    }));
+
+    const clearNonCombatants = nonCombatants.map((p) => ({
+      ...p,
+      activity: "inactive",
+      initiative: 0,
+    }))
+
+    const continuingPlayers = [...clearCombatants, ...clearNonCombatants];
+    setPlayers(continuingPlayers);
+    setNonCombatants([]);
+    setTargetedPlayer(null);
+    setStartingCombat(false);
+    setInCombat(false);
+  }
 
   return (
     <div className="app-container">
@@ -128,7 +156,7 @@ function App() {
         inCombat={inCombat}
         onClickShowAddPlayer={handleShowAddPlayer}
         onClickCombat={handleEnterBattle}
-        onClickEndCombat={() => setInCombat(false)}
+        onClickEndCombat={handleEndCombat}
         showAddPlayerBtn={showAddPlayer}
       />
       <div className="app">
@@ -136,19 +164,26 @@ function App() {
           <PlayerList players={players} />
         </div>
 
-        {showAddPlayer && <AddPlayerCard onAddPlayer={handleAddPlayer} />}
+        {
+          showAddPlayer && <AddPlayerCard onAddPlayer={ handleAddPlayer } />
+        }
 
-        {targetedPlayer && startingCombat && (
+        {
+          targetedPlayer && startingCombat && (
           <AssignInitiativeCard
             targetedPlayer={ targetedPlayer }
             onInitiativeInput={ handleInitiativeInput }
             onSetNonCombat={ handleSetNonCombat }
           />
-        )}
+          )
+        }
 
-        {targetedPlayer && !startingCombat && inCombat && (
-          <ActionCard targetedPlayer={targetedPlayer} />
-        )}
+        {
+          targetedPlayer && !startingCombat && inCombat && (
+          <ActionCard targetedPlayer={ targetedPlayer } />
+          )
+        }
+
       </div>
     </div>
   );
