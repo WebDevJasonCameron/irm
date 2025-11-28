@@ -66,46 +66,46 @@ function App() {
   }
 
   function handleSetNonCombat(updatedPlayer) {
-    advanceToNextPlayer(updatedPlayer.id, { activity: "inactive",
+    advanceToNextPlayer(updatedPlayer.id, {
+      activity: "inactive",
+      initiative: updatedPlayer.initiative ?? 0,  // keep the rolled initiative
     });
   }
 
   function advanceToNextPlayer(currentPlayerId, updatesForCurrent = {}) {
     setPlayers(prevPlayers => {
-      // 1) update the current player
+      // 1) Update the current player
       const updatedList = prevPlayers.map(p =>
         p.id === currentPlayerId
           ? { ...p, ...updatesForCurrent, targeted: false }
           : p
       );
 
-      // 2) find remaining active players with init 0
+      // Keep non-combatants up-to-date as we go
+      const currentNonCombatants = updatedList.filter(
+        p => p.activity === "inactive"
+      );
+      setNonCombatants(currentNonCombatants);
+
+      // 2) Find remaining active players with init 0
       const nonInitPlayers = updatedList.filter(
         p => p.activity === "active" && p.initiative === 0
       );
 
       if (nonInitPlayers.length === 0) {
-        // 1. filter + sort the combatants and non-combatants
+        // Final split at the end of the initiative phase
         const sortedCombatants = finalizeInitiativeOrder(updatedList);
         const sortedNonCombatants = finalizeNonCombatantList(updatedList);
 
-        // 2. store the sorted list as the new combat order
-        setPlayers(sortedCombatants);
-        setNonCombatants(sortedNonCombatants);
-
-        // 3. pick the first combatant for the action UI
-        const firstCombatant = sortedCombatants[0];
-        setTargetedPlayer(firstCombatant);
-
+        setNonCombatants(sortedNonCombatants);   // final sorted NCs
+        setTargetedPlayer(sortedCombatants[0]);
         setStartingCombat(false);
         setInCombat(true);
 
-        // important: since we called setPlayers() above,
-        // return the *previous* list here to terminate the state setter
-        return prevPlayers;
+        return sortedCombatants;  // players now only combatants
       }
 
-      // 3) target the next player
+      // 3) Target the next player who needs an initiative
       const nextTarget = nonInitPlayers[0];
       setTargetedPlayer(nextTarget);
 
@@ -116,6 +116,7 @@ function App() {
       );
     });
   }
+
 
   function finalizeInitiativeOrder(playersList) {
     const activeOnly = playersList.filter(p => p.activity === "active");
@@ -142,6 +143,8 @@ function App() {
     }))
 
     const continuingPlayers = [...clearCombatants, ...clearNonCombatants];
+    continuingPlayers.sort((a, b) => a.name.localeCompare(b.name));
+
     setPlayers(continuingPlayers);
     setNonCombatants([]);
     setTargetedPlayer(null);
@@ -158,6 +161,8 @@ function App() {
         onClickCombat={handleEnterBattle}
         onClickEndCombat={handleEndCombat}
         showAddPlayerBtn={showAddPlayer}
+        players={players}
+        nonCombatants={nonCombatants}
       />
       <div className="app">
         <div className="sidebar">
@@ -173,8 +178,7 @@ function App() {
           <AssignInitiativeCard
             targetedPlayer={ targetedPlayer }
             onInitiativeInput={ handleInitiativeInput }
-            onSetNonCombat={ handleSetNonCombat }
-          />
+            onSetNonCombat={ handleSetNonCombat } />
           )
         }
 

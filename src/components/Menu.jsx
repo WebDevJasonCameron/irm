@@ -5,7 +5,9 @@ export default function Menu({ startingCombat,
                                onClickShowAddPlayer,
                                onClickCombat,
                                onClickEndCombat,
-                               showAddPlayerBtn}) {
+                               showAddPlayerBtn,
+                               players,
+                               nonCombatants }) {
 
   const combatBtnFlag = (startingCombat || inCombat)
 
@@ -33,6 +35,10 @@ export default function Menu({ startingCombat,
             End Combat
           </Button>
         }
+
+        <button onClick={() => console.log(players)}>player test</button>
+        <button onClick={() => console.log(nonCombatants)}>nc test</button>
+
 
       </div>
     </header>

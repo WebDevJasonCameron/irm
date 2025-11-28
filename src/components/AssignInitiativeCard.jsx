@@ -25,7 +25,6 @@ export default function AssignInitiativeCard({
   } = targetedPlayer;
 
   const [init, setInit] = useState(0);
-  const [activityStatus, setActivityStautus] = useState(activity);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -77,7 +76,6 @@ export default function AssignInitiativeCard({
     };
 
     setInit(0);
-    setActivityStautus("active");
 
     onSetNonCombat(updatedPlayer);
   }
