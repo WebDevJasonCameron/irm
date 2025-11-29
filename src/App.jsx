@@ -117,7 +117,6 @@ function App() {
     });
   }
 
-
   function finalizeInitiativeOrder(playersList) {
     const activeOnly = playersList.filter(p => p.activity === "active");
     return [...activeOnly].sort((a, b) => b.initiative - a.initiative);
@@ -127,6 +126,41 @@ function App() {
     const nonActiveOnly = playersList.filter(p => p.activity === "inactive");
     return [...nonActiveOnly].sort((a, b) => b.initiative - a.initiative);
   }
+
+  function handleCompleteTurn(updatedFields) {
+    // updatedFields should at least have: { id, condition, exhaustion }
+    setPlayers(prevPlayers => {
+      // 1) apply persistent changes to the current player
+      const updatedList = prevPlayers.map(p =>
+        p.id === updatedFields.id
+          ? {
+            ...p,
+            condition: updatedFields.condition,
+            exhaustion: updatedFields.exhaustion,
+            round: (p.round ?? 0) + 1, // each time they act, bump their round count
+          }
+          : p
+      );
+
+      // 2) figure out who is next in initiative order
+      const currentIndex = updatedList.findIndex(p => p.id === updatedFields.id);
+      const nextIndex = (currentIndex + 1) % updatedList.length;
+      const nextPlayer = updatedList[nextIndex];
+
+      // 3) update targeted flags
+      const withTargetFlags = updatedList.map((p, index) =>
+        index === nextIndex
+          ? { ...p, targeted: true }
+          : { ...p, targeted: false }
+      );
+
+      // 4) update targetedPlayer for the ActionCard
+      setTargetedPlayer(nextPlayer);
+
+      return withTargetFlags;
+    });
+  }
+
 
   function handleEndCombat() {
     const clearCombatants = players.map((p) => ({
