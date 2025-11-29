@@ -6,7 +6,7 @@ function capitalize(str) {
 
 
 // Auto-Gen Level Options List
-export function LevelNumberSelectionGenerator({ min = 1,
+export function NumberSelectionGenerator({ min = 1,
                                                 max = 20,
                                                 styling = "",
                                                 ...props }) {

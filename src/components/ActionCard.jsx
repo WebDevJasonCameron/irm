@@ -1,6 +1,6 @@
 import Button from "../assets/Button.jsx";
 import {useState} from "react";
-import {GenericSelect, LevelNumberSelectionGenerator as LevelSelect} from "../assets/HelperUtils.jsx";
+import {GenericSelect, NumberSelectionGenerator as LevelSelect} from "../assets/HelperUtils.jsx";
 import ConditionsSource from "../assets/ConditionsSource.jsx";
 
 
@@ -30,28 +30,28 @@ export default function ActionCard({ targetedPlayer }) {
         <label>
         <input type="checkbox"
                checked={ actionChecked }
-               onChange={(e) => setActionChecked(e.target.checked)} />
+               onChange={ (e) => setActionChecked(e.target.checked) } />
           Action
         </label>
 
         <label>
           <input type="checkbox"
                  checked={ bonusActionChecked }
-                 onChange={(e) => setBonusActionChecked(e.target.checked)} />
+                 onChange={ (e) => setBonusActionChecked(e.target.checked) } />
           Bonus Action
         </label>
 
         <label>
           <input type="checkbox"
                  checked={ reactionChecked }
-                 onChange={(e) => setReactionChecked(e.target.checked)} />
+                 onChange={ (e) => setReactionChecked(e.target.checked) } />
           Reaction
         </label>
 
         <label>
           <input type="checkbox"
                  checked={ movementChecked }
-                 onChange={(e) => setMovementChecked(e.target.checked)} />
+                 onChange={ (e) => setMovementChecked(e.target.checked) } />
           Movement
         </label>
 
@@ -59,10 +59,10 @@ export default function ActionCard({ targetedPlayer }) {
           <label>Condition</label>
           <GenericSelect
             id="condition-select"
-            items={ConditionsSource}
-            value={condition}
+            items={ ConditionsSource }
+            value={ condition }
             styling="uniform-select"
-            onChange={setCondition}
+            onChange={ setCondition }
             placeholder="Set class..."
           />
         </div>
@@ -72,8 +72,8 @@ export default function ActionCard({ targetedPlayer }) {
           <LevelSelect min={0}
                        max={6}
                        styling="uniform-select"
-                       value={exhaustion}
-                       onChange={(e) => setExhaustion(Number(e.target.value))} />
+                       value={ exhaustion }
+                       onChange={ (e) => setExhaustion(Number(e.target.value)) } />
         </div>
 
       </div>

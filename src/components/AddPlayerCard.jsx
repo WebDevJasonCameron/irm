@@ -1,18 +1,19 @@
 import {useState} from "react";
 import RacesSource from "../assets/RacesSource.jsx";
 import ProfessionsSource from "../assets/ProfessionsSource.jsx";
-import { LevelNumberSelectionGenerator as LevelSelect, GenericSelect } from "../assets/HelperUtils.jsx";
+import { NumberSelectionGenerator as NumberSelect, GenericSelect } from "../assets/HelperUtils.jsx";
 import Button from "../assets/Button.jsx";
 
 export default function AddPlayerCard({ onAddPlayer }) {
   const [name, setName] = useState("");
-  const [image, setImage] = useState("https://i.pravatar.cc/48");
+  const [image, setImage] = useState("public/images/image1.png");
   const [type , setType] = useState("npc");
   const [level, setLevel] = useState(1);
   const [prof, setProf] = useState("");
   const [race, setRace] = useState("");
   const [seat, setSeat] = useState(0);
   const [initiative, setInitiative] = useState(0);
+  const [imageNumber, setImageNumber] = useState(1);
 
   // Placeholder Vars
   let inCombat = false;
@@ -27,7 +28,7 @@ export default function AddPlayerCard({ onAddPlayer }) {
       id,
       name,
       type: type,
-      image: `${image}?=${id}`,
+      image: `public/images/image${imageNumber}.png`,
       activity: "inactive",
       level,
       prof,
@@ -45,7 +46,7 @@ export default function AddPlayerCard({ onAddPlayer }) {
     onAddPlayer(newPlayer);
 
     setName("");
-    setImage("https://i.pravatar.cc/48");
+    setImage("public/images/image1.png");
     setType("pc");
     setLevel(1);
     setProf("");
@@ -64,9 +65,10 @@ export default function AddPlayerCard({ onAddPlayer }) {
              onChange={(e) => setName(e.target.value)} />
 
       <label>Image URL</label>
-      <input type="text"
-             value={ image }
-             onChange={(e) => setImage(e.target.value)} />
+      <NumberSelect min={1}
+                    max={20}
+                    value={imageNumber}
+                    onChange={(e) => setImageNumber(Number(e.target.value))} />
 
       <label>Type</label>
       <select value={ type }
@@ -87,7 +89,7 @@ export default function AddPlayerCard({ onAddPlayer }) {
       { type === "pc" && (
         <>
           <label>Level</label>
-          <LevelSelect min={1}
+          <NumberSelect min={1}
                        max={20}
                        value={level}
                        onChange={(e) => setLevel(Number(e.target.value))} />
