@@ -4,16 +4,38 @@ import {GenericSelect, NumberSelectionGenerator as LevelSelect} from "../assets/
 import ConditionsSource from "../assets/ConditionsSource.jsx";
 
 
-export default function ActionCard({ targetedPlayer }) {
-  const { name, image } = targetedPlayer;
+export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
+  const { id, name, image, condition, exhaustion } = targetedPlayer;
 
-  const [condition, setCondition] = useState("");
-  const [exhaustion, setExhaustion] = useState(0);
+  // persistent fields (start with what the player already has)
+  const [conditionState, setConditionState] = useState(condition || "");
+  const [exhaustionState, setExhaustionState] = useState(exhaustion || 0);
 
+  // per-turn-only flags
   const [actionChecked, setActionChecked] = useState(false);
   const [bonusActionChecked, setBonusActionChecked] = useState(false);
   const [reactionChecked, setReactionChecked] = useState(false);
   const [movementChecked, setMovementChecked] = useState(false);
+
+  function handleDoneClick(e) {
+    e.preventDefault();
+
+    // Build the minimal update payload for parent
+    const updated = {
+      id,
+      condition: conditionState,
+      exhaustion: exhaustionState,
+    }
+
+    // Reset turn-specific UI flags
+    setActionChecked(false);
+    setBonusActionChecked(false);
+    setReactionChecked(false);
+    setMovementChecked(false);
+
+    // Tell parent: this player's turn is done
+    onCompleteTurn(updated);
+  }
 
   return (
     <form className="action-card">
@@ -62,7 +84,7 @@ export default function ActionCard({ targetedPlayer }) {
             items={ ConditionsSource }
             value={ condition }
             styling="uniform-select"
-            onChange={ setCondition }
+            onChange={ setConditionState }
             placeholder="Set class..."
           />
         </div>
@@ -73,15 +95,15 @@ export default function ActionCard({ targetedPlayer }) {
                        max={6}
                        styling="uniform-select"
                        value={ exhaustion }
-                       onChange={ (e) => setExhaustion(Number(e.target.value)) } />
+                       onChange={ (e) => setExhaustionState(Number(e.target.value)) } />
         </div>
 
       </div>
 
       {/*Right*/}
       <div className="action-actions">
-        <Button >
-          Done
+        <Button btnType="submit">
+          Done / Next
         </Button>
         <Button>
           Hold

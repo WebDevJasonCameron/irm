@@ -218,7 +218,8 @@ function App() {
 
         {
           targetedPlayer && !startingCombat && inCombat && (
-          <ActionCard targetedPlayer={ targetedPlayer } />
+          <ActionCard targetedPlayer={ targetedPlayer }
+                      onCompleteTurn={handleCompleteTurn} />
           )
         }
 
