@@ -102,7 +102,7 @@ export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
 
       {/*Right*/}
       <div className="action-actions">
-        <Button btnType="submit">
+        <Button onClick={ handleDoneClick }>
           Done / Next
         </Button>
         <Button>
