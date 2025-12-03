@@ -32,6 +32,8 @@ export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
     setBonusActionChecked(false);
     setReactionChecked(false);
     setMovementChecked(false);
+    setConditionState("");
+    setExhaustionState(0);
 
     // Tell parent: this player's turn is done
     onCompleteTurn(updated);
@@ -82,7 +84,7 @@ export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
           <GenericSelect
             id="condition-select"
             items={ ConditionsSource }
-            value={ condition }
+            value={ conditionState }
             styling="uniform-select"
             onChange={ setConditionState }
             placeholder="Set class..."
@@ -94,7 +96,7 @@ export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
           <LevelSelect min={0}
                        max={6}
                        styling="uniform-select"
-                       value={ exhaustion }
+                       value={ exhaustionState }
                        onChange={ (e) => setExhaustionState(Number(e.target.value)) } />
         </div>
 
