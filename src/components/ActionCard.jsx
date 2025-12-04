@@ -8,8 +8,8 @@ export default function ActionCard({ targetedPlayer, onCompleteTurn }) {
   const { id, name, image, condition, exhaustion } = targetedPlayer;
 
   // persistent fields (start with what the player already has)
-  const [conditionState, setConditionState] = useState(condition || "");
-  const [exhaustionState, setExhaustionState] = useState(exhaustion || 0);
+  const [conditionState, setConditionState] = useState(condition);
+  const [exhaustionState, setExhaustionState] = useState(exhaustion);
 
   // per-turn-only flags
   const [actionChecked, setActionChecked] = useState(false);
