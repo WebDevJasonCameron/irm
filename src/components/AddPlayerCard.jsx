@@ -66,7 +66,7 @@ export default function AddPlayerCard({ onAddPlayer }) {
 
       <label>Image URL</label>
       <NumberSelect min={1}
-                    max={20}
+                    max={11}
                     value={imageNumber}
                     onChange={(e) => setImageNumber(Number(e.target.value))} />
 
